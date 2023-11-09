@@ -3,12 +3,14 @@
   "workspaces": {
     "packages": [
       "api",
-      "web"
+      "web",
+      "app"
     ]
   },
   "devDependencies": {
     "@redwoodjs/auth-dbauth-setup": "6.3.2",
-    "@redwoodjs/core": "6.3.2"
+    "@redwoodjs/core": "6.3.2",
+    "prettier-plugin-tailwindcss": "0.4.1"
   },
   "eslintConfig": {
     "extends": "@redwoodjs/eslint-config",

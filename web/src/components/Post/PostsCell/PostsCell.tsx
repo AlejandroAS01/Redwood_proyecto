@@ -6,8 +6,8 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import Posts from 'src/components/Post/Posts'
 
 export const QUERY = gql`
-  query FindPosts {
-    posts {
+  query POSTS {
+    posts: adminPosts {
       id
       title
       body

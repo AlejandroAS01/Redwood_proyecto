@@ -8,14 +8,20 @@ export const schema = gql`
   }
 
   type Query {
-    contacts: [Contact!]! @requireAuth
-    contact(id: Int!): Contact @requireAuth
+    contacts: [Contact!]! @skipAuth
+    contact(id: Int!): Contact @skipAuth
   }
 
   input CreateContactInput {
     name: String!
     email: String!
     message: String!
+  }
+
+  input UpdateContactInput {
+    name: String
+    email: String
+    message: String
   }
 
   type Mutation {

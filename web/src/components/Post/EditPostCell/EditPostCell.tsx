@@ -8,8 +8,8 @@ import { toast } from '@redwoodjs/web/toast'
 import PostForm from 'src/components/Post/PostForm'
 
 export const QUERY = gql`
-  query EditPostById($id: Int!) {
-    post: post(id: $id) {
+  query FindPostById($id: Int!) {
+    post: adminPost(id: $id) {
       id
       title
       body
@@ -17,6 +17,7 @@ export const QUERY = gql`
     }
   }
 `
+
 const UPDATE_POST_MUTATION = gql`
   mutation UpdatePostMutation($id: Int!, $input: UpdatePostInput!) {
     updatePost(id: $id, input: $input) {

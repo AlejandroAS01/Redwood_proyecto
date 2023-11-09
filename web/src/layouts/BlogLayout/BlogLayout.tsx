@@ -11,37 +11,37 @@ const BlogLayout = ({ children }: BlogLayoutProps) => {
 
   return (
     <>
-      <header>
-        <div className="flex-between">
+      <header className="bg-blue-600">
+        <div className="flex-between items-center px-4">
           <h1>
-            <Link to={routes.home()}>Redwood Blog</Link>
+            <Link to={routes.home()} className="text-3xl   text-blue-400 ">
+              Redwood Blog
+            </Link>
           </h1>
-          {isAuthenticated ? (
-            <div>
-              <span>Logged in as {currentUser.email}</span>{' '}
-              <button type="button" onClick={logOut}>
-                Logout
-              </button>
-            </div>
-          ) : (
-            <Link to={routes.login()}>Login</Link>
-          )}
+          <nav>
+            <ul className="text-gray-100">
+              <li>
+                <Link to={routes.about()}>About</Link>
+              </li>
+              <li>
+                <Link to={routes.contact()}>Contact</Link>
+              </li>
+              <li>
+                {isAuthenticated ? (
+                  <div>
+                    <button type="button" onClick={logOut}>
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <Link to={routes.login()}>Login</Link>
+                )}
+              </li>
+            </ul>
+          </nav>
         </div>
-        <nav>
-          <ul>
-            <li>
-              <Link to={routes.home()}>Home</Link>
-            </li>
-            <li>
-              <Link to={routes.about()}>About</Link>
-            </li>
-            <li>
-              <Link to={routes.contact()}>Contact</Link>
-            </li>
-          </ul>
-        </nav>
       </header>
-      <main>{children}</main>
+      <main className="bg-yellow-100 p-10">{children}</main>
     </>
   )
 }
