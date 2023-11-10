@@ -5,7 +5,8 @@ import { usePostsQuery } from "../api/types";
 import { PostsProps } from "../navigation";
 
 function PostScreen({  navigation }: PostsProps) {
-  const { data, loading } = usePostsQuery()
+  const { data, loading, error } = usePostsQuery()
+console.log(error, loading);
 
   if (loading){
     return (

@@ -15,7 +15,7 @@ export const posts = () => {
 
 export const post = ({ id }) => {
   return db.post.findUnique({ where: { id } })
-}s
+}
 
 export const createPost = ({ input }) => {
   return db.post.create({
@@ -23,7 +23,7 @@ export const createPost = ({ input }) => {
   })
 }
 
-export const updatePost = ({ id, input }) => {
+export const updatePost = async ({ id, input }) => {
   await verifyOwnership({ id })
   return db.post.update({
     data: input,
@@ -31,7 +31,7 @@ export const updatePost = ({ id, input }) => {
   })
 }
 
-export const deletePost = ({ id }) => {
+export const deletePost = async ({ id }) => {
   await verifyOwnership({ id })
   return db.post.delete({
     where: { id },
