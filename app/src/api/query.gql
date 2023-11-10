@@ -1,0 +1,19 @@
+query Posts{
+  posts {
+    id
+    title
+    createdAt
+  }
+}
+
+query Post($id: Int!) {
+    post(id: $id) {
+      id
+      title
+      body
+      createdAt
+      user {
+        name
+      }
+    }
+  }
