@@ -1,4 +1,13 @@
+import { ForbiddenError } from '@redwoodjs/graphql-server'
 import { db } from 'src/lib/db'
+
+const verifyOwnership = async ({ id }) => {
+  if (await post({ id })) {
+    return true
+  } else {
+    throw new ForbiddenError("You don't have access to this post")
+  }
+}
 
 export const posts = () => {
   return db.post.findMany()
@@ -15,6 +24,7 @@ export const createPost = ({ input }) => {
 }
 
 export const updatePost = ({ id, input }) => {
+  await verifyOwnership({ id })
   return db.post.update({
     data: input,
     where: { id },
@@ -22,6 +32,7 @@ export const updatePost = ({ id, input }) => {
 }
 
 export const deletePost = ({ id }) => {
+  await verifyOwnership({ id })
   return db.post.delete({
     where: { id },
   })
