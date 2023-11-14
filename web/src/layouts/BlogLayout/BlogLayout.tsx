@@ -7,7 +7,7 @@ type BlogLayoutProps = {
 }
 
 const BlogLayout = ({ children }: BlogLayoutProps) => {
-  const { isAuthenticated, currentUser, logOut } = useAuth()
+  const { isAuthenticated, logOut } = useAuth()
 
   return (
     <>
