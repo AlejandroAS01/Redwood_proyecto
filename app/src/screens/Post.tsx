@@ -1,14 +1,29 @@
 import React from 'react'
 
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, Pressable } from 'react-native'
 
-import { usePostQuery } from '../api/types'
+import {
+  CreateCommentInput,
+  useCreateCommentMutation,
+  usePostQuery,
+} from '../api/types'
+import CommentForms from '../components/CommentForm'
 import { PostProps } from '../navigation'
 
-function PostScreen({ route }: PostProps) {
+function PostScreen({ route, navigation }: PostProps) {
   const { id } = route.params
   const { data, loading } = usePostQuery({ variables: { id } })
-
+  const [createComment] = useCreateCommentMutation({
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          comments(value) {
+            return [...value, data?.createComment]
+          },
+        },
+      })
+    },
+  })
   if (loading) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -16,6 +31,18 @@ function PostScreen({ route }: PostProps) {
       </View>
     )
   }
+
+  // Función para navegar al screen de comentarios
+  const navigateToComments = () => {
+    navigation.navigate('Comments', { postId: id })
+  }
+
+  const handleCommentSubmit = (comment: CreateCommentInput) => {
+    // Lógica para enviar el comentario al servidor
+    console.log('Comentario enviado:', comment)
+    createComment({ variables: { input: comment } })
+  }
+
   return (
     <ScrollView
       style={{
@@ -37,7 +64,6 @@ function PostScreen({ route }: PostProps) {
         <Text
           style={{
             flex: 2,
-
             paddingLeft: 5,
             paddingRight: 5,
             backgroundColor: '#D8EEEE',
@@ -54,6 +80,10 @@ function PostScreen({ route }: PostProps) {
           Escrito por: {data?.post?.user.name}
         </Text>
       </View>
+      <Pressable onPress={navigateToComments}>
+        <Text style={{ color: 'blue' }}>Ver comentarios</Text>
+      </Pressable>
+      <CommentForms onCommentSubmit={handleCommentSubmit} postId={id} />
     </ScrollView>
   )
 }

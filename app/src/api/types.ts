@@ -23,6 +23,16 @@ export type Scalars = {
   Time: { input: any; output: any; }
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  body: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['Int']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  post: Post;
+  postId: Scalars['Int']['output'];
+};
+
 export type Contact = {
   __typename?: 'Contact';
   createdAt: Scalars['DateTime']['output'];
@@ -30,6 +40,12 @@ export type Contact = {
   id: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
+};
+
+export type CreateCommentInput = {
+  body: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  postId: Scalars['Int']['input'];
 };
 
 export type CreateContactInput = {
@@ -55,10 +71,17 @@ export type CreateUserInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createComment: Comment;
   createContact: Contact;
   createPost: Post;
+  deleteComment: Comment;
   deletePost: Post;
   updatePost: Post;
+};
+
+
+export type MutationCreateCommentArgs = {
+  input: CreateCommentInput;
 };
 
 
@@ -69,6 +92,11 @@ export type MutationCreateContactArgs = {
 
 export type MutationCreatePostArgs = {
   input: CreatePostInput;
+};
+
+
+export type MutationDeleteCommentArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -94,6 +122,7 @@ export type Post = {
 /** About the Redwood queries. */
 export type Query = {
   __typename?: 'Query';
+  comments: Array<Comment>;
   contact?: Maybe<Contact>;
   contacts: Array<Contact>;
   post?: Maybe<Post>;
@@ -101,6 +130,12 @@ export type Query = {
   /** Fetches the Redwood root schema. */
   redwood?: Maybe<Redwood>;
   users: Array<User>;
+};
+
+
+/** About the Redwood queries. */
+export type QueryCommentsArgs = {
+  postId: Scalars['Int']['input'];
 };
 
 
@@ -128,6 +163,12 @@ export type Redwood = {
   prismaVersion?: Maybe<Scalars['String']['output']>;
   /** The version of Redwood. */
   version?: Maybe<Scalars['String']['output']>;
+};
+
+export type UpdateCommentInput = {
+  body?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  postId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UpdateContactInput = {
@@ -164,6 +205,13 @@ export type User = {
   salt: Scalars['String']['output'];
 };
 
+export type CreateCommentMutationVariables = Exact<{
+  input: CreateCommentInput;
+}>;
+
+
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'Comment', id: number, name?: string | null, body: string, postId: number } };
+
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -176,7 +224,50 @@ export type PostQueryVariables = Exact<{
 
 export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: number, title: string, body: string, createdAt: any, user: { __typename?: 'User', name?: string | null } } | null };
 
+export type CommentQueryVariables = Exact<{
+  postId: Scalars['Int']['input'];
+}>;
 
+
+export type CommentQuery = { __typename?: 'Query', comments: Array<{ __typename?: 'Comment', id: number, name?: string | null, body: string, postId: number, post: { __typename?: 'Post', id: number } }> };
+
+
+export const CreateCommentDocument = gql`
+    mutation CreateComment($input: CreateCommentInput!) {
+  createComment(input: $input) {
+    id
+    name
+    body
+    postId
+  }
+}
+    `;
+export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
+
+/**
+ * __useCreateCommentMutation__
+ *
+ * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, options);
+      }
+export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
+export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const PostsDocument = gql`
     query Posts {
   posts {
@@ -264,3 +355,49 @@ export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
 export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
 export type PostSuspenseQueryHookResult = ReturnType<typeof usePostSuspenseQuery>;
 export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>;
+export const CommentDocument = gql`
+    query Comment($postId: Int!) {
+  comments(postId: $postId) {
+    id
+    name
+    body
+    post {
+      id
+    }
+    postId
+  }
+}
+    `;
+
+/**
+ * __useCommentQuery__
+ *
+ * To run a query within a React component, call `useCommentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommentQuery({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useCommentQuery(baseOptions: Apollo.QueryHookOptions<CommentQuery, CommentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CommentQuery, CommentQueryVariables>(CommentDocument, options);
+      }
+export function useCommentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CommentQuery, CommentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CommentQuery, CommentQueryVariables>(CommentDocument, options);
+        }
+export function useCommentSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CommentQuery, CommentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CommentQuery, CommentQueryVariables>(CommentDocument, options);
+        }
+export type CommentQueryHookResult = ReturnType<typeof useCommentQuery>;
+export type CommentLazyQueryHookResult = ReturnType<typeof useCommentLazyQuery>;
+export type CommentSuspenseQueryHookResult = ReturnType<typeof useCommentSuspenseQuery>;
+export type CommentQueryResult = Apollo.QueryResult<CommentQuery, CommentQueryVariables>;

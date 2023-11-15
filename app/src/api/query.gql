@@ -17,3 +17,16 @@ query Post($id: Int!) {
       }
     }
   }
+query Comment($postId:Int!)
+{
+  comments(postId:$postId){
+    id
+    name
+    body
+    post{
+      id
+    }
+    postId
+  }
+
+}
